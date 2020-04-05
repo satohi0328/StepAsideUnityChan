@@ -29,11 +29,42 @@ public class ItemGenerator : MonoBehaviour
     //アイテムを出すx方向の範囲
     private float posRange = 3.4f;
 
+    // アイテム生成のチェックポイント
+    private int chkPoint = -160;
+    // アイテムの間隔
+    private int itemRange = 15;
+
+    // アイテムの生成範囲
+    private int generateRange = 40;
+
     // Use this for initialization
     void Start()
     {
-        //一定の距離ごとにアイテムを生成
-        for (int i = startPos; i < goalPos; i += 15)
+
+        // MainCameraコンポーネントを設定
+        this.mainCameraObj = Camera.main.gameObject;
+        // unitychanコンポーネントを設定
+        this.unitychanObj = GameObject.Find("unitychan");
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // 一定距離ごとにアイテム生成メソッド呼び出し
+        generateItem();
+
+        //画面外オブジェクト削除メソッド呼び出し
+        destroyItemOverScreen(carPrefabList);
+        destroyItemOverScreen(conePrefabList);
+        destroyItemOverScreen(coinPrefabList);
+    }
+
+    // 一定距離ごとにアイテム生成
+    private void generateItem()
+    {
+        // unitychanの位置 + アイテム生成範囲がチェックポイント内、かつゴールポイント内の場合
+        if (unitychanObj.transform.position.z + generateRange >= chkPoint && chkPoint <= goalPos - itemRange)
         {
             //どのアイテムを出すのかをランダムに設定
             int num = Random.Range(1, 11);
@@ -43,7 +74,7 @@ public class ItemGenerator : MonoBehaviour
                 for (float j = -1; j <= 1; j += 0.4f)
                 {
                     GameObject cone = Instantiate(conePrefab) as GameObject;
-                    cone.transform.position = new Vector3(4 * j, cone.transform.position.y, i);
+                    cone.transform.position = new Vector3(4 * j, cone.transform.position.y, chkPoint);
 
                     // 生成したconeをListに保持
                     conePrefabList.Add(cone);
@@ -64,7 +95,7 @@ public class ItemGenerator : MonoBehaviour
                     {
                         //コインを生成
                         GameObject coin = Instantiate(coinPrefab) as GameObject;
-                        coin.transform.position = new Vector3(posRange * j, coin.transform.position.y, i + offsetZ);
+                        coin.transform.position = new Vector3(posRange * j, coin.transform.position.y, chkPoint + offsetZ);
 
                         // 生成したcoinをListに保持
                         coinPrefabList.Add(coin);
@@ -74,7 +105,7 @@ public class ItemGenerator : MonoBehaviour
                     {
                         //車を生成
                         GameObject car = Instantiate(carPrefab) as GameObject;
-                        car.transform.position = new Vector3(posRange * j, car.transform.position.y, i + offsetZ);
+                        car.transform.position = new Vector3(posRange * j, car.transform.position.y, chkPoint + offsetZ);
 
                         // 生成したcarをListに保持
                         carPrefabList.Add(car);
@@ -82,26 +113,15 @@ public class ItemGenerator : MonoBehaviour
                     }
                 }
             }
+            // チェックポイント更新
+            chkPoint = chkPoint + itemRange;
         }
-
-        // MainCameraコンポーネントを設定
-        this.mainCameraObj = Camera.main.gameObject;
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //画面外オブジェクト削除メソッド呼び出し
-        destroyItemOverScreen(carPrefabList);
-        destroyItemOverScreen(conePrefabList);
-		destroyItemOverScreen(coinPrefabList);
-	}
-
-    // 画面外オブジェクトを削除
+    // 画面外オブジェクト削除
     private void destroyItemOverScreen(List<GameObject> argList)
     {
-        Debug.Log(argList.Count);
         // 引数配列の要素数ループ
         for (int i = 0; i < argList.Count; i++)
         {
