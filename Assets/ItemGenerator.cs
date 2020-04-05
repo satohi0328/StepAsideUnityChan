@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ItemGenerator : MonoBehaviour
 {
@@ -9,6 +10,18 @@ public class ItemGenerator : MonoBehaviour
     public GameObject coinPrefab;
     //cornPrefabを入れる
     public GameObject conePrefab;
+    //carPrefabを入れる
+    public List<GameObject> carPrefabList = new List<GameObject>();
+    //coinPrefabを入れる
+    public List<GameObject> coinPrefabList = new List<GameObject>();
+    //cornPrefabを入れる
+    public List<GameObject> conePrefabList = new List<GameObject>();
+
+    // MainCameraを入れる
+    public GameObject mainCameraObj;
+    // Unitychanを入れる
+    public GameObject unitychanObj;
+
     //スタート地点
     private int startPos = -160;
     //ゴール地点
@@ -31,6 +44,9 @@ public class ItemGenerator : MonoBehaviour
                 {
                     GameObject cone = Instantiate(conePrefab) as GameObject;
                     cone.transform.position = new Vector3(4 * j, cone.transform.position.y, i);
+
+                    // 生成したconeをListに保持
+                    conePrefabList.Add(cone);
                 }
             }
             else
@@ -49,21 +65,56 @@ public class ItemGenerator : MonoBehaviour
                         //コインを生成
                         GameObject coin = Instantiate(coinPrefab) as GameObject;
                         coin.transform.position = new Vector3(posRange * j, coin.transform.position.y, i + offsetZ);
+
+                        // 生成したcoinをListに保持
+                        coinPrefabList.Add(coin);
+
                     }
                     else if (7 <= item && item <= 9)
                     {
                         //車を生成
                         GameObject car = Instantiate(carPrefab) as GameObject;
                         car.transform.position = new Vector3(posRange * j, car.transform.position.y, i + offsetZ);
+
+                        // 生成したcarをListに保持
+                        carPrefabList.Add(car);
+
                     }
                 }
             }
         }
+
+        // MainCameraコンポーネントを設定
+        this.mainCameraObj = Camera.main.gameObject;
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        //画面外オブジェクト削除メソッド呼び出し
+        destroyItemOverScreen(carPrefabList);
+        destroyItemOverScreen(conePrefabList);
+		destroyItemOverScreen(coinPrefabList);
+	}
 
+    // 画面外オブジェクトを削除
+    private void destroyItemOverScreen(List<GameObject> argList)
+    {
+        Debug.Log(argList.Count);
+        // 引数配列の要素数ループ
+        for (int i = 0; i < argList.Count; i++)
+        {
+            // メインカメラのz座標より小さい場合
+            if (this.mainCameraObj.transform.position.z > argList[i].transform.position.z)
+            {
+                // オブジェクト削除
+                Destroy(argList[i]);
+                // 配列から削除
+                argList.RemoveAt(i);
+                // インデントが下がるため、デクリメント
+                i--;
+            }
+        }
     }
 }

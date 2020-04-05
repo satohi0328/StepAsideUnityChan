@@ -477,7 +477,7 @@ Canvas:
   m_GameObject: {fileID: 656388730}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -915,6 +915,10 @@ MonoBehaviour:
   carPrefab: {fileID: 1463873097573866, guid: f0803e6f56732449b989572d5fdeeda6, type: 2}
   coinPrefab: {fileID: 1811824781192626, guid: 7425bd8ca4882486fb88f2868d283176, type: 2}
   conePrefab: {fileID: 1578731701216860, guid: 37fa1500a16ce44ad8b697dcae84468a, type: 2}
+  carPrefabList: []
+  coinPrefabList: []
+  conePrefabList: []
+  mainCameraObj: {fileID: 0}
 --- !u!4 &975478117
 Transform:
   m_ObjectHideFlags: 0
@@ -1711,7 +1715,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1677925337
+  randomSeed: 1874784357
   InitialModule:
     serializedVersion: 3
     enabled: 1
